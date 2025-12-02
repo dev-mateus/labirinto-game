@@ -1,10 +1,4 @@
-// ============================================================
-// MAZE GAME - Aplicação Principal (Minimalista)
-// ============================================================
-
-// ============================================================
-// 1. ELEMENTOS DOM & ESTADO GLOBAL
-// ============================================================
+// MAZE GAME - Aplicacao Principal (Minimalista)
 
 const canvas = document.getElementById('labirinto-canvas');
 const ctx = canvas?.getContext('2d');
@@ -22,10 +16,7 @@ let timerInterval = null;
 let deferredPrompt = null;
 let isDrawing = false;
 
-// ============================================================
-// 2. GERENCIADOR DE TEMA
-// ============================================================
-
+// GERENCIADOR DE TEMA
 const TemaManager = {
 	salvo: localStorage.getItem('labirinto-tema'),
 	
@@ -46,6 +37,7 @@ const TemaManager = {
 // 3. GERENCIADOR DE PWA
 // ============================================================
 
+// GERENCIADOR DE PWA
 const PWAManager = {
 	init() {
 		this.registrarServiceWorker();
@@ -56,8 +48,8 @@ const PWAManager = {
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', () => {
 				navigator.serviceWorker.register('/service-worker.js')
-					.then(() => console.log('✓ Service Worker registrado'))
-					.catch(err => console.warn('✗ SW erro:', err));
+					.then(() => console.log('Service Worker OK'))
+					.catch(err => console.warn('SW erro:', err));
 			});
 		}
 	},
@@ -76,7 +68,7 @@ const PWAManager = {
 		deferredPrompt.prompt();
 		deferredPrompt.userChoice.then(({ outcome }) => {
 			if (outcome === 'accepted') {
-				document.getElementById('info-pwa').textContent = '✓ App instalado com sucesso!';
+				document.getElementById('info-pwa').textContent = 'App instalado!';
 				setTimeout(() => {
 					document.getElementById('info-pwa').textContent = '';
 				}, 3000);
@@ -87,10 +79,7 @@ const PWAManager = {
 	}
 };
 
-// ============================================================
-// 4. GERENCIADOR DO JOGO - LABIRINTO
-// ============================================================
-
+// GERENCIADOR DO JOGO
 const LabirintoGame = {
 	TAMANHO: 16,
 	
@@ -150,8 +139,6 @@ const LabirintoGame = {
 		this.atualizarTempo();
 		this.desenhar();
 		timerInterval = setInterval(() => this.atualizarTempo(), 100);
-		
-		// Atualizar ID do maze
 		if (mazeIdSpan) mazeIdSpan.textContent = this.obterIdMaze();
 	},
 	
@@ -162,7 +149,7 @@ const LabirintoGame = {
 	atualizarTempo() {
 		if (!inicioTempo) return;
 		const tempo = ((Date.now() - inicioTempo) / 1000).toFixed(1);
-		tempoJogo.textContent = `${tempo}s`;
+		tempoJogo.textContent = tempo + 's';
 	},
 	
 	desenhar() {
@@ -171,7 +158,6 @@ const LabirintoGame = {
 		const tamanho = labirinto.length;
 		const celula = canvas.width / tamanho;
 		
-		// Desenhar paredes
 		const style = document.documentElement.getAttribute('data-tema') === 'escuro' ? '#0a0a0a' : '#1a1a1a';
 		ctx.fillStyle = style;
 		labirinto.forEach((linha, y) => {
@@ -180,13 +166,11 @@ const LabirintoGame = {
 			});
 		});
 		
-		// Desenhar jogador
 		ctx.fillStyle = '#00c6fb';
 		ctx.beginPath();
 		ctx.arc((jogador.x + 0.5) * celula, (jogador.y + 0.5) * celula, celula / 2.5, 0, 2 * Math.PI);
 		ctx.fill();
 		
-		// Desenhar destino
 		ctx.fillStyle = '#43e97b';
 		ctx.fillRect(destino.x * celula + celula * 0.2, destino.y * celula + celula * 0.2, celula * 0.6, celula * 0.6);
 	},
@@ -205,17 +189,14 @@ const LabirintoGame = {
 	checarVitoria() {
 		if (jogador.x === destino.x && jogador.y === destino.y) {
 			const tempoFinal = ((Date.now() - inicioTempo) / 1000).toFixed(1);
-			gameStatus.textContent = `🎉 Concluído em ${tempoFinal}s!`;
+			gameStatus.textContent = 'Concluido em ' + tempoFinal + 's!';
 			HistoricoManager.salvar(tempoFinal);
 			this.parar();
 		}
 	}
 };
 
-// ============================================================
-// 5. GERENCIADOR DE CONTROLES (Click/Drag)
-// ============================================================
-
+// GERENCIADOR DE CONTROLES
 const ControlesManager = {
 	init() {
 		this.configurarTeclado();
@@ -248,7 +229,7 @@ const ControlesManager = {
 			if (isDrawing) this.procesarMovimento(e);
 		});
 		
-		canvas?.addEventListener('mouseup', () => {
+		document.addEventListener('mouseup', () => {
 			isDrawing = false;
 		});
 		
@@ -260,17 +241,17 @@ const ControlesManager = {
 	configurarToque() {
 		canvas?.addEventListener('touchstart', (e) => {
 			isDrawing = true;
-			this.procesarMovimento(e.touches[0]);
+			if (e.touches[0]) this.procesarMovimento(e.touches[0]);
 		});
 		
 		canvas?.addEventListener('touchmove', (e) => {
-			if (isDrawing) {
+			if (isDrawing && e.touches[0]) {
 				e.preventDefault();
 				this.procesarMovimento(e.touches[0]);
 			}
 		});
 		
-		canvas?.addEventListener('touchend', () => {
+		document.addEventListener('touchend', () => {
 			isDrawing = false;
 		});
 	},
@@ -288,26 +269,20 @@ const ControlesManager = {
 		const cellX = Math.floor(x / celula);
 		const cellY = Math.floor(y / celula);
 		
-		// Calcular direção baseada em diferença
 		const diffX = cellX - jogador.x;
 		const diffY = cellY - jogador.y;
 		
 		if (Math.abs(diffX) > Math.abs(diffY)) {
-			// Movimento horizontal
 			if (diffX > 0) LabirintoGame.mover(1, 0);
 			else if (diffX < 0) LabirintoGame.mover(-1, 0);
 		} else if (Math.abs(diffY) > 0) {
-			// Movimento vertical
 			if (diffY > 0) LabirintoGame.mover(0, 1);
 			else if (diffY < 0) LabirintoGame.mover(0, -1);
 		}
 	}
 };
 
-// ============================================================
-// 6. GERENCIADOR DE HISTÓRICO
-// ============================================================
-
+// GERENCIADOR DE HISTORICO
 const HistoricoManager = {
 	chave: 'labirinto-historico',
 	max: 10,
@@ -320,10 +295,7 @@ const HistoricoManager = {
 	}
 };
 
-// ============================================================
-// 7. INICIALIZAÇÃO DA APLICAÇÃO
-// ============================================================
-
+// INICIALIZACAO
 document.addEventListener('DOMContentLoaded', () => {
 	TemaManager.init();
 	PWAManager.init();
