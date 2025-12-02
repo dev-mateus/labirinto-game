@@ -33,18 +33,53 @@ if (btnJogar) btnJogar.addEventListener('click', mostrarJogo);
 if (btnVoltar) btnVoltar.addEventListener('click', voltarLanding);
 
 // Geração simples de labirinto (placeholder)
-function gerarLabirinto(tamanho = 16) {
-	// 0 = caminho, 1 = parede
-	const matriz = [];
-	for (let y = 0; y < tamanho; y++) {
-		matriz[y] = [];
-		for (let x = 0; x < tamanho; x++) {
-			matriz[y][x] = (x === 0 || y === 0 || x === tamanho-1 || y === tamanho-1) ? 1 : (Math.random() < 0.2 ? 1 : 0);
+// Algoritmo de geração de labirinto com seed (DFS)
+function gerarLabirinto(tamanho = 16, seed = null) {
+	// Função de seed simples
+	let s = seed || Math.random();
+	function rand() {
+		s = Math.sin(s) * 10000;
+		return s - Math.floor(s);
+	}
+	// Inicializa tudo como parede
+	const matriz = Array.from({length: tamanho}, () => Array(tamanho).fill(1));
+	function dentro(x, y) {
+		return x > 0 && y > 0 && x < tamanho-1 && y < tamanho-1;
+	}
+	function embaralhar(arr) {
+		for (let i = arr.length-1; i > 0; i--) {
+			const j = Math.floor(rand() * (i+1));
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+		return arr;
+	}
+	function dfs(x, y) {
+		matriz[y][x] = 0;
+		const dirs = embaralhar([[0,-2],[0,2],[2,0],[-2,0]]);
+		for (const [dx,dy] of dirs) {
+			const nx = x+dx, ny = y+dy;
+			if (dentro(nx,ny) && matriz[ny][nx] === 1) {
+				matriz[y+dy/2][x+dx/2] = 0;
+				dfs(nx,ny);
+			}
 		}
 	}
+	dfs(1,1);
 	matriz[1][1] = 0; // início
 	matriz[tamanho-2][tamanho-2] = 0; // destino
 	return matriz;
+}
+
+// Gera seed baseada na data para labirinto diário
+function seedDiario() {
+	const hoje = new Date();
+	return hoje.getFullYear()*10000 + (hoje.getMonth()+1)*100 + hoje.getDate();
+}
+
+// Gera 100 labirintos aleatórios para extra
+function gerarLabirintosAleatorios(qtd = 100, tamanho = 16) {
+	const seeds = Array.from({length: qtd}, (_,i) => i+1);
+	return seeds.map(s => gerarLabirinto(tamanho, s));
 }
 
 function desenharLabirinto() {
@@ -71,7 +106,8 @@ function desenharLabirinto() {
 }
 
 function iniciarJogo() {
-	labirinto = gerarLabirinto();
+	// Labirinto do dia
+	labirinto = gerarLabirinto(16, seedDiario());
 	jogador = { x: 1, y: 1 };
 	destino = { x: labirinto.length-2, y: labirinto.length-2 };
 	inicioTempo = Date.now();
@@ -147,5 +183,8 @@ function renderHistorico() {
 		lista.appendChild(li);
 	});
 }
+
+// Exemplo: gerar 100 labirintos aleatórios (pode ser usado para modo extra)
+// const labirintosExtras = gerarLabirintosAleatorios();
 
 renderHistorico();
