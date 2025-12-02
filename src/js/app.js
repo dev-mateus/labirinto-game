@@ -1,260 +1,292 @@
-// Alternância de tema claro/escuro manual
-const btnTemaTop = document.getElementById('btn-tema');
-function alternarTema() {
-	const atual = document.documentElement.getAttribute('data-tema');
-	if (atual === 'escuro') {
-		document.documentElement.setAttribute('data-tema', 'claro');
-		localStorage.setItem('labirinto-tema', 'claro');
-	} else {
-		document.documentElement.setAttribute('data-tema', 'escuro');
-		localStorage.setItem('labirinto-tema', 'escuro');
-	}
-}
-if (btnTemaTop) btnTemaTop.addEventListener('click', alternarTema);
-// Aplica tema salvo
-const temaSalvo = localStorage.getItem('labirinto-tema');
-if (temaSalvo) document.documentElement.setAttribute('data-tema', temaSalvo);
+// ============================================================
+// LABIRINTO GAME - Aplicação Principal
+// ============================================================
 
-// Download do labirinto como imagem PNG
-const btnDownload = document.getElementById('btn-download');
-if (btnDownload && canvas) {
-	btnDownload.addEventListener('click', () => {
-		const link = document.createElement('a');
-		link.download = 'labirinto.png';
-		link.href = canvas.toDataURL('image/png');
-		link.click();
-	});
-}
-// PWA: registrar Service Worker
-if ('serviceWorker' in navigator) {
-	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('/service-worker.js')
-			.then(() => console.log('Service Worker registrado'))
-			.catch(err => console.warn('SW erro:', err));
-	});
-}
+// ============================================================
+// 1. ELEMENTOS DOM & ESTADO GLOBAL
+// ============================================================
 
-// Instalação do PWA
-let deferredPrompt;
-const btnInstalar = document.getElementById('btn-instalar');
-window.addEventListener('beforeinstallprompt', (e) => {
-	e.preventDefault();
-	deferredPrompt = e;
-	if (btnInstalar) btnInstalar.style.display = 'inline-block';
-});
-if (btnInstalar) {
-	btnInstalar.addEventListener('click', () => {
-		if (deferredPrompt) {
-			deferredPrompt.prompt();
-			deferredPrompt.userChoice.then(choiceResult => {
-				if (choiceResult.outcome === 'accepted') {
-					document.querySelector('.info-pwa').textContent = 'App instalado!';
-				} else {
-					document.querySelector('.info-pwa').textContent = 'Instalação cancelada.';
-				}
-				deferredPrompt = null;
-				btnInstalar.style.display = 'none';
-			});
-		}
-	});
-}
-// Arquivo principal JS do Labirinto Game
-// Estrutura inicial, lógica será adicionada nas próximas etapas
-
-// Elementos principais
-const btnJogar = document.getElementById('btn-jogar');
-const secJogo = document.querySelector('.jogo');
-const secHero = document.querySelector('.hero');
-const btnVoltar = document.getElementById('btn-voltar');
 const canvas = document.getElementById('labirinto-canvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
+const ctx = canvas?.getContext('2d');
 const tempoJogo = document.getElementById('tempo-jogo');
+const btnInstalar = document.getElementById('btn-instalar');
+const btnDownload = document.getElementById('btn-download');
+const btnTema = document.getElementById('btn-tema');
 
-// Estado do jogo
 let labirinto = [];
 let jogador = { x: 1, y: 1 };
 let destino = { x: 14, y: 14 };
 let inicioTempo = null;
 let timerInterval = null;
+let deferredPrompt = null;
 
-// Função para mostrar/ocultar seções
-function mostrarJogo() {
-	secHero.style.display = 'none';
-	secJogo.style.display = 'block';
-	iniciarJogo();
-}
-function voltarLanding() {
-	secJogo.style.display = 'none';
-	secHero.style.display = 'block';
-	pararTimer();
-}
+// ============================================================
+// 2. GERENCIADOR DE TEMA
+// ============================================================
 
-if (btnJogar) btnJogar.addEventListener('click', mostrarJogo);
-if (btnVoltar) btnVoltar.addEventListener('click', voltarLanding);
-
-// Geração simples de labirinto (placeholder)
-// Algoritmo de geração de labirinto com seed (DFS)
-function gerarLabirinto(tamanho = 16, seed = null) {
-	// Função de seed simples
-	let s = seed || Math.random();
-	function rand() {
-		s = Math.sin(s) * 10000;
-		return s - Math.floor(s);
+const TemaManager = {
+	salvo: localStorage.getItem('labirinto-tema'),
+	
+	init() {
+		if (this.salvo) document.documentElement.setAttribute('data-tema', this.salvo);
+		btnTema?.addEventListener('click', () => this.alternar());
+	},
+	
+	alternar() {
+		const atual = document.documentElement.getAttribute('data-tema');
+		const novo = atual === 'escuro' ? 'claro' : 'escuro';
+		document.documentElement.setAttribute('data-tema', novo);
+		localStorage.setItem('labirinto-tema', novo);
 	}
-	// Inicializa tudo como parede
-	const matriz = Array.from({length: tamanho}, () => Array(tamanho).fill(1));
-	function dentro(x, y) {
-		return x > 0 && y > 0 && x < tamanho-1 && y < tamanho-1;
-	}
-	function embaralhar(arr) {
-		for (let i = arr.length-1; i > 0; i--) {
-			const j = Math.floor(rand() * (i+1));
-			[arr[i], arr[j]] = [arr[j], arr[i]];
+};
+
+// ============================================================
+// 3. GERENCIADOR DE PWA
+// ============================================================
+
+const PWAManager = {
+	init() {
+		this.registrarServiceWorker();
+		this.configurarInstalacao();
+	},
+	
+	registrarServiceWorker() {
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('/service-worker.js')
+					.then(() => console.log('✓ Service Worker registrado'))
+					.catch(err => console.warn('✗ SW erro:', err));
+			});
 		}
-		return arr;
+	},
+	
+	configurarInstalacao() {
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+			deferredPrompt = e;
+			btnInstalar && (btnInstalar.style.display = 'inline-block');
+		});
+		btnInstalar?.addEventListener('click', () => this.instalar());
+	},
+	
+	instalar() {
+		if (!deferredPrompt) return;
+		deferredPrompt.prompt();
+		deferredPrompt.userChoice.then(({ outcome }) => {
+			const msg = outcome === 'accepted' ? 'App instalado!' : 'Instalação cancelada.';
+			document.querySelector('.info-pwa').textContent = msg;
+			deferredPrompt = null;
+			btnInstalar && (btnInstalar.style.display = 'none');
+		});
 	}
-	function dfs(x, y) {
-		matriz[y][x] = 0;
-		const dirs = embaralhar([[0,-2],[0,2],[2,0],[-2,0]]);
-		for (const [dx,dy] of dirs) {
-			const nx = x+dx, ny = y+dy;
-			if (dentro(nx,ny) && matriz[ny][nx] === 1) {
-				matriz[y+dy/2][x+dx/2] = 0;
-				dfs(nx,ny);
+};
+
+// ============================================================
+// 4. GERENCIADOR DO JOGO - LABIRINTO
+// ============================================================
+
+const LabirintoGame = {
+	TAMANHO: 16,
+	
+	gerarLabirinto(seed = null) {
+		const tamanho = this.TAMANHO;
+		let s = seed || Math.random();
+		
+		const rand = () => {
+			s = Math.sin(s) * 10000;
+			return s - Math.floor(s);
+		};
+		
+		const matriz = Array.from({ length: tamanho }, () => Array(tamanho).fill(1));
+		const dentro = (x, y) => x > 0 && y > 0 && x < tamanho - 1 && y < tamanho - 1;
+		
+		const embaralhar = (arr) => {
+			for (let i = arr.length - 1; i > 0; i--) {
+				const j = Math.floor(rand() * (i + 1));
+				[arr[i], arr[j]] = [arr[j], arr[i]];
 			}
+			return arr;
+		};
+		
+		const dfs = (x, y) => {
+			matriz[y][x] = 0;
+			embaralhar([[0, -2], [0, 2], [2, 0], [-2, 0]]).forEach(([dx, dy]) => {
+				const nx = x + dx, ny = y + dy;
+				if (dentro(nx, ny) && matriz[ny][nx] === 1) {
+					matriz[y + dy / 2][x + dx / 2] = 0;
+					dfs(nx, ny);
+				}
+			});
+		};
+		
+		dfs(1, 1);
+		matriz[1][1] = 0;
+		matriz[tamanho - 2][tamanho - 2] = 0;
+		return matriz;
+	},
+	
+	obterSeedDiaria() {
+		const d = new Date();
+		return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+	},
+	
+	iniciar() {
+		labirinto = this.gerarLabirinto(this.obterSeedDiaria());
+		jogador = { x: 1, y: 1 };
+		destino = { x: this.TAMANHO - 2, y: this.TAMANHO - 2 };
+		inicioTempo = Date.now();
+		this.atualizarTempo();
+		this.desenhar();
+		timerInterval = setInterval(() => this.atualizarTempo(), 100);
+	},
+	
+	parar() {
+		clearInterval(timerInterval);
+		tempoJogo.textContent = '';
+	},
+	
+	atualizarTempo() {
+		if (!inicioTempo) return;
+		const tempo = ((Date.now() - inicioTempo) / 1000).toFixed(1);
+		tempoJogo.textContent = `Tempo: ${tempo}s`;
+	},
+	
+	desenhar() {
+		if (!ctx) return;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		const tamanho = labirinto.length;
+		const celula = canvas.width / tamanho;
+		
+		// Desenhar paredes
+		ctx.fillStyle = '#222';
+		labirinto.forEach((linha, y) => {
+			linha.forEach((celh, x) => {
+				if (celh === 1) ctx.fillRect(x * celula, y * celula, celula, celula);
+			});
+		});
+		
+		// Desenhar jogador
+		ctx.fillStyle = '#0078d7';
+		ctx.beginPath();
+		ctx.arc((jogador.x + 0.5) * celula, (jogador.y + 0.5) * celula, celula / 2.5, 0, 2 * Math.PI);
+		ctx.fill();
+		
+		// Desenhar destino
+		ctx.fillStyle = '#43d17a';
+		ctx.fillRect(destino.x * celula + celula * 0.2, destino.y * celula + celula * 0.2, celula * 0.6, celula * 0.6);
+	},
+	
+	mover(dx, dy) {
+		const nx = jogador.x + dx;
+		const ny = jogador.y + dy;
+		if (labirinto[ny] && labirinto[ny][nx] === 0) {
+			jogador.x = nx;
+			jogador.y = ny;
+			this.desenhar();
+			this.checarVitoria();
+		}
+	},
+	
+	checarVitoria() {
+		if (jogador.x === destino.x && jogador.y === destino.y) {
+			const tempoFinal = ((Date.now() - inicioTempo) / 1000).toFixed(1);
+			tempoJogo.textContent = `Parabéns! Tempo: ${tempoFinal}s`;
+			HistoricoManager.salvar(tempoFinal);
+			this.parar();
 		}
 	}
-	dfs(1,1);
-	matriz[1][1] = 0; // início
-	matriz[tamanho-2][tamanho-2] = 0; // destino
-	return matriz;
-}
+};
 
-// Gera seed baseada na data para labirinto diário
-function seedDiario() {
-	const hoje = new Date();
-	return hoje.getFullYear()*10000 + (hoje.getMonth()+1)*100 + hoje.getDate();
-}
+// ============================================================
+// 5. GERENCIADOR DE CONTROLES
+// ============================================================
 
-// Gera 100 labirintos aleatórios para extra
-function gerarLabirintosAleatorios(qtd = 100, tamanho = 16) {
-	const seeds = Array.from({length: qtd}, (_,i) => i+1);
-	return seeds.map(s => gerarLabirinto(tamanho, s));
-}
-
-function desenharLabirinto() {
-	if (!ctx) return;
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	const tamanho = labirinto.length;
-	const celula = canvas.width / tamanho;
-	for (let y = 0; y < tamanho; y++) {
-		for (let x = 0; x < tamanho; x++) {
-			if (labirinto[y][x] === 1) {
-				ctx.fillStyle = '#222';
-				ctx.fillRect(x * celula, y * celula, celula, celula);
-			}
-		}
+const ControlesManager = {
+	botoes: {
+		cima: document.getElementById('btn-cima'),
+		baixo: document.getElementById('btn-baixo'),
+		esquerda: document.getElementById('btn-esquerda'),
+		direita: document.getElementById('btn-direita')
+	},
+	
+	init() {
+		this.configurarTeclado();
+		this.configurarBotoes();
+	},
+	
+	configurarTeclado() {
+		document.addEventListener('keydown', (e) => {
+			if (!this.jogoAtivo()) return;
+			const movimentos = {
+				'ArrowUp': [0, -1], 'ArrowDown': [0, 1],
+				'ArrowLeft': [-1, 0], 'ArrowRight': [1, 0]
+			};
+			if (movimentos[e.key]) LabirintoGame.mover(...movimentos[e.key]);
+		});
+	},
+	
+	configurarBotoes() {
+		const movimentos = { cima: [0, -1], baixo: [0, 1], esquerda: [-1, 0], direita: [1, 0] };
+		Object.entries(movimentos).forEach(([dir, [dx, dy]]) => {
+			this.botoes[dir]?.addEventListener('click', () => {
+				LabirintoGame.mover(dx, dy);
+				this.feedback(this.botoes[dir]);
+			});
+		});
+	},
+	
+	feedback(btn) {
+		btn?.classList.add('ativo');
+		setTimeout(() => btn?.classList.remove('ativo'), 150);
+	},
+	
+	jogoAtivo() {
+		return document.querySelector('.jogo')?.style.display !== 'none';
 	}
-	// Jogador
-	ctx.fillStyle = '#0078d7';
-	ctx.beginPath();
-	ctx.arc((jogador.x+0.5)*celula, (jogador.y+0.5)*celula, celula/2.5, 0, 2*Math.PI);
-	ctx.fill();
-	// Destino
-	ctx.fillStyle = '#43d17a';
-	ctx.fillRect((destino.x)*celula+celula*0.2, (destino.y)*celula+celula*0.2, celula*0.6, celula*0.6);
-}
+};
 
-function iniciarJogo() {
-	// Labirinto do dia
-	labirinto = gerarLabirinto(16, seedDiario());
-	jogador = { x: 1, y: 1 };
-	destino = { x: labirinto.length-2, y: labirinto.length-2 };
-	inicioTempo = Date.now();
-	atualizarTempo();
-	desenharLabirinto();
-	if (timerInterval) clearInterval(timerInterval);
-	timerInterval = setInterval(atualizarTempo, 100);
-}
+// ============================================================
+// 6. GERENCIADOR DE HISTÓRICO
+// ============================================================
 
-function pararTimer() {
-	if (timerInterval) clearInterval(timerInterval);
-	tempoJogo.textContent = '';
-}
-
-function atualizarTempo() {
-	if (!inicioTempo) return;
-	const t = ((Date.now() - inicioTempo)/1000).toFixed(1);
-	tempoJogo.textContent = `Tempo: ${t}s`;
-}
-
-// Movimentação
-function mover(dx, dy) {
-	const nx = jogador.x + dx;
-	const ny = jogador.y + dy;
-	if (labirinto[ny] && labirinto[ny][nx] === 0) {
-		jogador.x = nx;
-		jogador.y = ny;
-		desenharLabirinto();
-		checarVitoria();
+const HistoricoManager = {
+	chave: 'labirinto-historico',
+	max: 10,
+	
+	salvar(tempo) {
+		let historico = JSON.parse(localStorage.getItem(this.chave) || '[]');
+		historico.unshift({ tempo: Number(tempo), data: new Date().toLocaleDateString() });
+		historico = historico.slice(0, this.max);
+		localStorage.setItem(this.chave, JSON.stringify(historico));
 	}
-}
+};
 
-document.addEventListener('keydown', e => {
-	if (secJogo.style.display !== 'block') return;
-	if (e.key === 'ArrowUp') mover(0, -1);
-	if (e.key === 'ArrowDown') mover(0, 1);
-	if (e.key === 'ArrowLeft') mover(-1, 0);
-	if (e.key === 'ArrowRight') mover(1, 0);
+// ============================================================
+// 7. GERENCIADOR DE DOWNLOAD
+// ============================================================
+
+const DownloadManager = {
+	init() {
+		btnDownload?.addEventListener('click', () => this.baixarLabirinto());
+	},
+	
+	baixarLabirinto() {
+		if (!canvas) return;
+		const link = document.createElement('a');
+		link.download = `labirinto-${LabirintoGame.obterSeedDiaria()}.png`;
+		link.href = canvas.toDataURL('image/png');
+		link.click();
+	}
+};
+
+// ============================================================
+// 8. INICIALIZAÇÃO DA APLICAÇÃO
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+	TemaManager.init();
+	PWAManager.init();
+	ControlesManager.init();
+	DownloadManager.init();
+	LabirintoGame.iniciar();
 });
-
-// Botões mobile
-const btnCima = document.getElementById('btn-cima');
-const btnBaixo = document.getElementById('btn-baixo');
-const btnEsquerda = document.getElementById('btn-esquerda');
-const btnDireita = document.getElementById('btn-direita');
-
-function feedbackBotao(btn) {
-	btn.classList.add('ativo');
-	setTimeout(() => btn.classList.remove('ativo'), 150);
-}
-
-btnCima?.addEventListener('click', () => { mover(0, -1); feedbackBotao(btnCima); });
-btnBaixo?.addEventListener('click', () => { mover(0, 1); feedbackBotao(btnBaixo); });
-btnEsquerda?.addEventListener('click', () => { mover(-1, 0); feedbackBotao(btnEsquerda); });
-btnDireita?.addEventListener('click', () => { mover(1, 0); feedbackBotao(btnDireita); });
-
-function checarVitoria() {
-	if (jogador.x === destino.x && jogador.y === destino.y) {
-		const tempoFinal = ((Date.now() - inicioTempo)/1000).toFixed(1);
-		tempoJogo.textContent = `Parabéns! Tempo: ${tempoFinal}s`;
-		salvarHistorico(tempoFinal);
-		pararTimer();
-	}
-}
-
-// Histórico LocalStorage
-function salvarHistorico(tempo) {
-	let historico = JSON.parse(localStorage.getItem('labirinto-historico') || '[]');
-	historico.unshift({ tempo: Number(tempo), data: new Date().toLocaleDateString() });
-	historico = historico.slice(0, 10);
-	localStorage.setItem('labirinto-historico', JSON.stringify(historico));
-	renderHistorico();
-}
-
-function renderHistorico() {
-	const lista = document.getElementById('lista-historico');
-	if (!lista) return;
-	let historico = JSON.parse(localStorage.getItem('labirinto-historico') || '[]');
-	lista.innerHTML = '';
-	historico.forEach((item, i) => {
-		const li = document.createElement('li');
-		li.textContent = `${item.tempo}s (${item.data})`;
-		lista.appendChild(li);
-	});
-}
-
-// Exemplo: gerar 100 labirintos aleatórios (pode ser usado para modo extra)
-// const labirintosExtras = gerarLabirintosAleatorios();
-
-renderHistorico();
