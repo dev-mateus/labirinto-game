@@ -149,8 +149,8 @@ const LabirintoGame = {
 		const tamanho = labirinto.length;
 		const celula = canvas.width / tamanho;
 		
-		// Desenhar paredes
-		ctx.fillStyle = '#0a0a0a';
+		// Desenhar paredes com cinza mais claro para melhor contraste
+		ctx.fillStyle = '#2a2a2a';
 		labirinto.forEach((linha, y) => {
 			linha.forEach((celh, x) => {
 				if (celh === 1) ctx.fillRect(x * celula, y * celula, celula, celula);
