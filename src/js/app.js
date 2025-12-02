@@ -4,6 +4,7 @@ const canvas = document.getElementById('labirinto-canvas');
 const ctx = canvas?.getContext('2d');
 const tempoJogo = document.getElementById('tempo-jogo');
 const btnInstalar = document.getElementById('btn-instalar');
+const btnPwaDownload = document.getElementById('btn-pwa-download');
 const mazeIdSpan = document.querySelector('#maze-id span');
 const gameStatus = document.getElementById('game-status');
 
@@ -42,8 +43,10 @@ const PWAManager = {
 			e.preventDefault();
 			deferredPrompt = e;
 			btnInstalar && (btnInstalar.style.display = 'flex');
+			btnPwaDownload && (btnPwaDownload.style.display = 'block');
 		});
 		btnInstalar?.addEventListener('click', () => this.instalar());
+		btnPwaDownload?.addEventListener('click', () => this.instalar());
 	},
 	
 	instalar() {
@@ -61,6 +64,7 @@ const PWAManager = {
 			}
 			deferredPrompt = null;
 			btnInstalar && (btnInstalar.style.display = 'none');
+			btnPwaDownload && (btnPwaDownload.style.display = 'none');
 		});
 	}
 };
