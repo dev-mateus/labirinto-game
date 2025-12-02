@@ -101,7 +101,7 @@ const LabirintoGame = {
 		
 		dfs(1, 1);
 		matriz[1][1] = 0;
-		matriz[14][14] = 0;
+		matriz[13][13] = 0;
 		return matriz;
 	},
 	
@@ -118,7 +118,7 @@ const LabirintoGame = {
 	iniciar() {
 		labirinto = this.gerarLabirinto(this.obterSeedDiaria());
 		jogador = { x: 1, y: 1 };
-		destino = { x: 14, y: 14 };
+		destino = { x: 13, y: 13 };
 		inicioTempo = Date.now();
 		gameStatus.textContent = '';
 		this.atualizarTempo();
