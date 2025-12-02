@@ -1,301 +1,264 @@
-/* Estilos base para o Labirinto Game */
+/* Labirinto Game - Design Minimalista Moderno */
+
 :root {
-  --color-bg: #f5f5f5;
+  --gradient-primary: linear-gradient(135deg, #00c6fb 0%, #43e97b 50%, #f09433 100%);
+  --gradient-alt: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+  --color-bg: #fafafa;
+  --color-bg-dark: #0f0f0f;
   --color-text: #222;
-  --color-primary: #0078d7;
-  --color-footer: #222;
-  --color-footer-bg: #eaeaea;
-  --color-gradient: linear-gradient(120deg, #00c6fb 0%, #43e97b 100%);
-  --color-card-bg: #fff;
-  --color-card-bg-dark: #23272f;
-  --shadow-card: 0 2px 12px rgba(0,0,0,0.07);
-  --font-title: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  --font-body: 'Segoe UI', Arial, sans-serif;
+  --color-text-light: #666;
+  --color-text-dark: #f0f0f0;
+  --color-canvas: #ffffff;
+  --color-walls: #1a1a1a;
+  --color-player: #00c6fb;
+  --color-goal: #43e97b;
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.12);
+  --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 html[data-tema='escuro'] {
-  --color-bg: #181818;
-  --color-text: #f5f5f5;
-  --color-footer-bg: #222;
-  --color-footer: #eaeaea;
+  --color-bg: #0f0f0f;
+  --color-text: #f0f0f0;
+  --color-text-light: #aaa;
+  --color-canvas: #1a1a1a;
+  --color-walls: #0a0a0a;
 }
-html[data-tema='claro'] {
-  --color-bg: #f5f5f5;
-  --color-text: #222;
-  --color-footer-bg: #eaeaea;
-  --color-footer: #222;
+
+* {
+  box-sizing: border-box;
 }
+
 body {
   margin: 0;
-  font-family: var(--font-body);
-  background: var(--color-gradient);
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--color-bg);
   color: var(--color-text);
+  transition: background-color 0.4s, color 0.4s;
   min-height: 100vh;
-  transition: background 0.5s;
 }
+
 main {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem 2rem 1rem;
-}
-.hero {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 70vh;
-  margin-bottom: 1.5rem;
-}
-.card-hero {
-  background: var(--color-card-bg);
-  box-shadow: var(--shadow-card);
-  border-radius: 12px;
-  padding: 2.2rem 1.5rem 1.7rem 1.5rem;
-  max-width: 370px;
-  margin: 0 auto;
-  text-align: center;
-  animation: fadeIn 0.7s;
-  position: relative;
-  position: relative;
-}
-.btn-tema-top {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(255,255,255,0.7);
-  border: none;
-  border-radius: 50%;
-  padding: 0.35rem;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  transition: background 0.18s, box-shadow 0.18s;
-  z-index: 2;
-}
-.btn-tema-top:hover {
-  background: #e6f2fa;
-  box-shadow: 0 2px 8px rgba(0,120,215,0.10);
-}
-.btn-tema-top svg {
-  display: block;
-}
-.icon-labirinto {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1.1rem;
-  animation: iconPop 0.8s cubic-bezier(.5,1.8,.5,1) 0.1s both;
-}
-@keyframes iconPop {
-  0% { opacity: 0; transform: scale(0.7) translateY(20px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-@media (prefers-color-scheme: dark), html[data-tema='escuro'] {
-  .card-hero {
-    background: var(--color-card-bg-dark);
-    color: var(--color-text);
-  }
-}
-.card-hero h1 {
-  font-family: var(--font-title);
-  font-size: 2.1rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
-  font-weight: 700;
-  color: #222;
-}
-.card-hero .descricao {
-  font-size: 1.08rem;
-  margin-bottom: 1.1rem;
-  color: #444;
-}
-.actions {
-  display: flex;
-  gap: 0.7rem;
-  justify-content: center;
-  margin-bottom: 1.2rem;
-}
-.info-pwa {
-  margin-top: 0.7rem;
-  font-size: 0.95rem;
-  color: var(--color-primary);
-}
-.instrucoes-entrada {
-  margin-top: 1.2rem;
-  font-size: 0.98rem;
-  color: #555;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
 }
-.instrucoes-entrada span {
-  opacity: 0.85;
+
+.header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 100;
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: none; }
+
+html[data-tema='escuro'] .header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.hero h1 {
-  font-size: 2.2rem;
-  margin-bottom: 0.5rem;
+
+.header-controls {
+  display: flex;
+  gap: 0.75rem;
 }
-.descricao {
-  font-size: 1.1rem;
-  margin-bottom: 1.2rem;
-}
-.btn-primary, .btn-secondary {
-  display: inline-block;
-  padding: 0.7rem 1.5rem;
-  margin: 0.3rem;
-  font-size: 1rem;
-  border-radius: 6px;
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
   border: none;
+  border-radius: 50%;
+  background: rgba(0, 198, 251, 0.1);
+  color: var(--color-player);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  background: rgba(0, 198, 251, 0.2);
+  transform: scale(1.08);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
+}
+
+.btn-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.game-area {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.maze-id {
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.maze-id span {
+  color: var(--color-player);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.tempo-display {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-player);
+  letter-spacing: -0.02em;
+}
+
+.canvas-maze {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-width: 340px;
+  border-radius: 16px;
+  background: var(--color-canvas);
+  box-shadow: var(--shadow-lg);
+  cursor: crosshair;
+  border: none;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  transition: box-shadow 0.3s ease;
+}
+
+.canvas-maze:hover {
+  box-shadow: 0 12px 50px rgba(0, 198, 251, 0.15);
+}
+
+.canvas-maze:focus {
+  outline: 2px solid var(--color-player);
+  outline-offset: 2px;
+}
+
+.game-status {
+  min-height: 3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-goal);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-pwa {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.75rem 1.5rem;
+  background: var(--color-goal);
+  color: #000;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  max-width: 90vw;
+  text-align: center;
+  animation: slideUp 0.4s ease;
+}
+
+html[data-tema='escuro'] .info-pwa {
+  color: #000;
+}
+
+/* Temas de cor alternativos */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f0f0f;
+    --color-text: #f0f0f0;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  main {
+    min-height: 100dvh;
+  }
+
+  .header {
+    padding: 0.75rem 1rem;
+  }
+
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .game-area {
+    gap: 1rem;
+  }
+
+  .canvas-maze {
+    max-width: 100%;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .maze-id {
+    font-size: 0.85rem;
+  }
+
+  .tempo-display {
+    font-size: 1.2rem;
+  }
+
+  .game-status {
+    font-size: 1rem;
+  }
+}
   transition: background 0.2s, color 0.2s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   transition: background 0.2s, color 0.2s, transform 0.13s;
-}
-.btn-primary:hover, .btn-secondary:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 4px 16px rgba(0,120,215,0.10);
-}
-.btn-primary {
-  background: var(--color-primary);
-  color: #fff;
-}
-.btn-primary:focus, .btn-secondary:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-.btn-secondary {
-  background: #fff;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-}
-.jogo {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-#labirinto-canvas {
-  border: 2px solid var(--color-primary);
-  background: #fff;
-  margin-bottom: 1rem;
-  outline: none;
-}
-.controles {
-  display: flex;
-  justify-content: center;
-  gap: 1.2rem;
-  margin-bottom: 1rem;
-  margin-top: 1.2rem;
-}
-.controles button {
-  font-size: 2.2rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 50%;
-  border: 2px solid var(--color-primary);
-  background: #fff;
-  color: var(--color-primary);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  transition: background 0.2s, color 0.2s, transform 0.1s;
-  outline: none;
-}
-.controles button:active {
-  background: var(--color-primary);
-  color: #fff;
-  transform: scale(0.95);
-}
-.controles button.ativo {
-  background: var(--color-primary);
-  color: #fff;
-  box-shadow: 0 0 0 4px #43d17a33;
-  transform: scale(0.95);
-}
-.controles button:focus {
-  outline: 2px solid var(--color-primary);
-}
-#tempo-jogo {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  color: var(--color-primary);
-}
-.info-pwa {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: var(--color-primary);
-}
-.como-funciona, .acessibilidade, .historico {
-  margin-bottom: 1.2rem;
-}
-/* Títulos das seções modernos */
-.como-funciona h2, .acessibilidade h2, .historico h2 {
-  font-family: var(--font-title);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #0078d7;
-  margin-bottom: 0.5rem;
-}
-@media (prefers-color-scheme: dark), html[data-tema='escuro'] {
-  .card-hero h1 {
-    color: #f5f5f5;
-  }
-  .card-hero .descricao {
-    color: #ccc;
-  }
-  .como-funciona h2, .acessibilidade h2, .historico h2 {
-    color: #43e97b;
-  }
-}
-.como-funciona ul {
-  padding-left: 1.2rem;
-}
-.historico ol {
-  padding-left: 1.2rem;
-  font-size: 1rem;
-}
-h2 {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-}
-@media (max-width: 600px) {
-  main {
-    padding: 1rem 0.5rem 2rem 0.5rem;
-  }
-  .hero h1 {
-    font-size: 1.5rem;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  .btn-primary {
-    background: #005fa3;
-    color: #fff;
-  }
-  .btn-secondary {
-    background: #222;
-    color: #fff;
-    border: 1px solid #005fa3;
-  }
-}
-footer {
-  text-align: center;
-  padding: 0.7rem 0.5rem;
-  background: rgba(255,255,255,0.75);
-  color: #444;
-  font-size: 0.93rem;
-  border-top: 1px solid #e0e0e0;
-  margin-top: 2rem;
-  letter-spacing: 0.01em;
-}
-@media (prefers-color-scheme: dark), html[data-tema='escuro'] {
-  footer {
-    background: rgba(34,34,34,0.85);
-    color: #bbb;
-    border-top: 1px solid #333;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #181818;
-    --color-text: #f5f5f5;
-    --color-footer-bg: #222;
-    --color-footer: #eaeaea;
-  }
 }

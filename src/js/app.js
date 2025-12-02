@@ -1,5 +1,5 @@
 // ============================================================
-// LABIRINTO GAME - Aplicação Principal
+// MAZE GAME - Aplicação Principal (Minimalista)
 // ============================================================
 
 // ============================================================
@@ -10,8 +10,9 @@ const canvas = document.getElementById('labirinto-canvas');
 const ctx = canvas?.getContext('2d');
 const tempoJogo = document.getElementById('tempo-jogo');
 const btnInstalar = document.getElementById('btn-instalar');
-const btnDownload = document.getElementById('btn-download');
 const btnTema = document.getElementById('btn-tema');
+const mazeIdSpan = document.querySelector('#maze-id span');
+const gameStatus = document.getElementById('game-status');
 
 let labirinto = [];
 let jogador = { x: 1, y: 1 };
@@ -19,6 +20,7 @@ let destino = { x: 14, y: 14 };
 let inicioTempo = null;
 let timerInterval = null;
 let deferredPrompt = null;
+let isDrawing = false;
 
 // ============================================================
 // 2. GERENCIADOR DE TEMA
@@ -64,7 +66,7 @@ const PWAManager = {
 		window.addEventListener('beforeinstallprompt', (e) => {
 			e.preventDefault();
 			deferredPrompt = e;
-			btnInstalar && (btnInstalar.style.display = 'inline-block');
+			btnInstalar && (btnInstalar.style.display = 'flex');
 		});
 		btnInstalar?.addEventListener('click', () => this.instalar());
 	},
@@ -73,8 +75,12 @@ const PWAManager = {
 		if (!deferredPrompt) return;
 		deferredPrompt.prompt();
 		deferredPrompt.userChoice.then(({ outcome }) => {
-			const msg = outcome === 'accepted' ? 'App instalado!' : 'Instalação cancelada.';
-			document.querySelector('.info-pwa').textContent = msg;
+			if (outcome === 'accepted') {
+				document.getElementById('info-pwa').textContent = '✓ App instalado com sucesso!';
+				setTimeout(() => {
+					document.getElementById('info-pwa').textContent = '';
+				}, 3000);
+			}
 			deferredPrompt = null;
 			btnInstalar && (btnInstalar.style.display = 'none');
 		});
@@ -130,25 +136,33 @@ const LabirintoGame = {
 		return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
 	},
 	
+	obterIdMaze() {
+		const seed = this.obterSeedDiaria();
+		return String(seed).padStart(5, '0');
+	},
+	
 	iniciar() {
 		labirinto = this.gerarLabirinto(this.obterSeedDiaria());
 		jogador = { x: 1, y: 1 };
 		destino = { x: this.TAMANHO - 2, y: this.TAMANHO - 2 };
 		inicioTempo = Date.now();
+		gameStatus.textContent = '';
 		this.atualizarTempo();
 		this.desenhar();
 		timerInterval = setInterval(() => this.atualizarTempo(), 100);
+		
+		// Atualizar ID do maze
+		if (mazeIdSpan) mazeIdSpan.textContent = this.obterIdMaze();
 	},
 	
 	parar() {
 		clearInterval(timerInterval);
-		tempoJogo.textContent = '';
 	},
 	
 	atualizarTempo() {
 		if (!inicioTempo) return;
 		const tempo = ((Date.now() - inicioTempo) / 1000).toFixed(1);
-		tempoJogo.textContent = `Tempo: ${tempo}s`;
+		tempoJogo.textContent = `${tempo}s`;
 	},
 	
 	desenhar() {
@@ -158,7 +172,8 @@ const LabirintoGame = {
 		const celula = canvas.width / tamanho;
 		
 		// Desenhar paredes
-		ctx.fillStyle = '#222';
+		const style = document.documentElement.getAttribute('data-tema') === 'escuro' ? '#0a0a0a' : '#1a1a1a';
+		ctx.fillStyle = style;
 		labirinto.forEach((linha, y) => {
 			linha.forEach((celh, x) => {
 				if (celh === 1) ctx.fillRect(x * celula, y * celula, celula, celula);
@@ -166,13 +181,13 @@ const LabirintoGame = {
 		});
 		
 		// Desenhar jogador
-		ctx.fillStyle = '#0078d7';
+		ctx.fillStyle = '#00c6fb';
 		ctx.beginPath();
 		ctx.arc((jogador.x + 0.5) * celula, (jogador.y + 0.5) * celula, celula / 2.5, 0, 2 * Math.PI);
 		ctx.fill();
 		
 		// Desenhar destino
-		ctx.fillStyle = '#43d17a';
+		ctx.fillStyle = '#43e97b';
 		ctx.fillRect(destino.x * celula + celula * 0.2, destino.y * celula + celula * 0.2, celula * 0.6, celula * 0.6);
 	},
 	
@@ -190,7 +205,7 @@ const LabirintoGame = {
 	checarVitoria() {
 		if (jogador.x === destino.x && jogador.y === destino.y) {
 			const tempoFinal = ((Date.now() - inicioTempo) / 1000).toFixed(1);
-			tempoJogo.textContent = `Parabéns! Tempo: ${tempoFinal}s`;
+			gameStatus.textContent = `🎉 Concluído em ${tempoFinal}s!`;
 			HistoricoManager.salvar(tempoFinal);
 			this.parar();
 		}
@@ -198,50 +213,94 @@ const LabirintoGame = {
 };
 
 // ============================================================
-// 5. GERENCIADOR DE CONTROLES
+// 5. GERENCIADOR DE CONTROLES (Click/Drag)
 // ============================================================
 
 const ControlesManager = {
-	botoes: {
-		cima: document.getElementById('btn-cima'),
-		baixo: document.getElementById('btn-baixo'),
-		esquerda: document.getElementById('btn-esquerda'),
-		direita: document.getElementById('btn-direita')
-	},
-	
 	init() {
 		this.configurarTeclado();
-		this.configurarBotoes();
+		this.configurarMouse();
+		this.configurarToque();
 	},
 	
 	configurarTeclado() {
 		document.addEventListener('keydown', (e) => {
-			if (!this.jogoAtivo()) return;
 			const movimentos = {
 				'ArrowUp': [0, -1], 'ArrowDown': [0, 1],
-				'ArrowLeft': [-1, 0], 'ArrowRight': [1, 0]
+				'ArrowLeft': [-1, 0], 'ArrowRight': [1, 0],
+				'w': [0, -1], 's': [0, 1],
+				'a': [-1, 0], 'd': [1, 0]
 			};
-			if (movimentos[e.key]) LabirintoGame.mover(...movimentos[e.key]);
+			if (movimentos[e.key]) {
+				e.preventDefault();
+				LabirintoGame.mover(...movimentos[e.key]);
+			}
 		});
 	},
 	
-	configurarBotoes() {
-		const movimentos = { cima: [0, -1], baixo: [0, 1], esquerda: [-1, 0], direita: [1, 0] };
-		Object.entries(movimentos).forEach(([dir, [dx, dy]]) => {
-			this.botoes[dir]?.addEventListener('click', () => {
-				LabirintoGame.mover(dx, dy);
-				this.feedback(this.botoes[dir]);
-			});
+	configurarMouse() {
+		canvas?.addEventListener('mousedown', (e) => {
+			isDrawing = true;
+			this.procesarMovimento(e);
+		});
+		
+		canvas?.addEventListener('mousemove', (e) => {
+			if (isDrawing) this.procesarMovimento(e);
+		});
+		
+		canvas?.addEventListener('mouseup', () => {
+			isDrawing = false;
+		});
+		
+		canvas?.addEventListener('mouseleave', () => {
+			isDrawing = false;
 		});
 	},
 	
-	feedback(btn) {
-		btn?.classList.add('ativo');
-		setTimeout(() => btn?.classList.remove('ativo'), 150);
+	configurarToque() {
+		canvas?.addEventListener('touchstart', (e) => {
+			isDrawing = true;
+			this.procesarMovimento(e.touches[0]);
+		});
+		
+		canvas?.addEventListener('touchmove', (e) => {
+			if (isDrawing) {
+				e.preventDefault();
+				this.procesarMovimento(e.touches[0]);
+			}
+		});
+		
+		canvas?.addEventListener('touchend', () => {
+			isDrawing = false;
+		});
 	},
 	
-	jogoAtivo() {
-		return document.querySelector('.jogo')?.style.display !== 'none';
+	procesarMovimento(e) {
+		if (!canvas || !isDrawing) return;
+		
+		const rect = canvas.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+		
+		const tamanho = LabirintoGame.TAMANHO;
+		const celula = canvas.width / tamanho;
+		
+		const cellX = Math.floor(x / celula);
+		const cellY = Math.floor(y / celula);
+		
+		// Calcular direção baseada em diferença
+		const diffX = cellX - jogador.x;
+		const diffY = cellY - jogador.y;
+		
+		if (Math.abs(diffX) > Math.abs(diffY)) {
+			// Movimento horizontal
+			if (diffX > 0) LabirintoGame.mover(1, 0);
+			else if (diffX < 0) LabirintoGame.mover(-1, 0);
+		} else if (Math.abs(diffY) > 0) {
+			// Movimento vertical
+			if (diffY > 0) LabirintoGame.mover(0, 1);
+			else if (diffY < 0) LabirintoGame.mover(0, -1);
+		}
 	}
 };
 
@@ -262,31 +321,12 @@ const HistoricoManager = {
 };
 
 // ============================================================
-// 7. GERENCIADOR DE DOWNLOAD
-// ============================================================
-
-const DownloadManager = {
-	init() {
-		btnDownload?.addEventListener('click', () => this.baixarLabirinto());
-	},
-	
-	baixarLabirinto() {
-		if (!canvas) return;
-		const link = document.createElement('a');
-		link.download = `labirinto-${LabirintoGame.obterSeedDiaria()}.png`;
-		link.href = canvas.toDataURL('image/png');
-		link.click();
-	}
-};
-
-// ============================================================
-// 8. INICIALIZAÇÃO DA APLICAÇÃO
+// 7. INICIALIZAÇÃO DA APLICAÇÃO
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
 	TemaManager.init();
 	PWAManager.init();
 	ControlesManager.init();
-	DownloadManager.init();
 	LabirintoGame.iniciar();
 });

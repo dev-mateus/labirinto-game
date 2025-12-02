@@ -3,101 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Labirinto Game - Jogo de Labirinto Diário</title>
-  <meta name="description" content="Jogue um novo labirinto todo dia! Mobile-first, acessível, PWA, histórico de tempos e tema claro/escuro.">
-  <meta name="keywords" content="labirinto, jogo, puzzle, pwa, mobile, acessibilidade, tempo, desafio, web game">
+  <title>Maze • Daily Puzzle Game</title>
+  <meta name="description" content="Um novo labirinto todo dia. Minimalista, rápido, viciante.">
+  <meta name="keywords" content="labirinto, puzzle, maze, jogo diário, web game, minimalista">
   <meta name="author" content="Mateus">
-  <meta name="theme-color" content="#0078d7">
+  <meta name="theme-color" content="#00c6fb">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="src/css/style.css">
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <link rel="preload" href="assets/icon-192.png" as="image">
-    <link rel="preload" href="assets/icon-512.png" as="image">
-  <meta property="og:title" content="Labirinto Game - Jogo de Labirinto Diário">
-  <meta property="og:description" content="Jogue um novo labirinto todo dia! Mobile-first, acessível, PWA, histórico de tempos e tema claro/escuro.">
+  <link rel="preload" href="assets/icon-192.png" as="image">
+  <link rel="preload" href="assets/icon-512.png" as="image">
+  <meta property="og:title" content="Maze • Daily Puzzle Game">
+  <meta property="og:description" content="Um novo labirinto todo dia. Minimalista, rápido, viciante.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/og-image.png">
   <meta property="og:url" content="https://mateus.github.io/labirinto-game/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Labirinto Game - Jogo de Labirinto Diário">
-  <meta name="twitter:description" content="Jogue um novo labirinto todo dia! Mobile-first, acessível, PWA, histórico de tempos e tema claro/escuro.">
+  <meta name="twitter:title" content="Maze • Daily Puzzle Game">
+  <meta name="twitter:description" content="Um novo labirinto todo dia. Minimalista, rápido, viciante.">
   <meta name="twitter:image" content="assets/og-image.png">
 </head>
 <body>
-  <main id="main-content" tabindex="-1">
-    <section class="hero" aria-labelledby="titulo-jogo">
-      <div class="card-hero">
-                        <button id="btn-tema" class="btn-tema-top" aria-label="Alternar tema claro/escuro">
-                          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="11" cy="11" r="9" stroke="#0078d7" stroke-width="2" fill="none"/>
-                            <path d="M11 4a7 7 0 1 0 7 7c0-3.87-3.13-7-7-7z" fill="#0078d7"/>
-                          </svg>
-                        </button>
-                <div class="icon-labirinto" aria-hidden="true">
-                  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="4" width="48" height="48" rx="12" fill="#0078d7"/>
-                    <path d="M16 16H40V40H16V16ZM20 20V36H36V20H20Z" fill="#fff"/>
-                    <rect x="24" y="24" width="8" height="8" rx="2" fill="#43e97b"/>
-                  </svg>
-                </div>
-        <h1 id="titulo-jogo">Labirinto Game</h1>
-        <p id="descricao-jogo" class="descricao">Desafie-se diariamente com um novo labirinto! Resolva, acompanhe seu tempo e instale o app para jogar offline.</p>
-        <div class="actions">
-          <button id="btn-jogar" class="btn-primary" aria-label="Jogar agora">Jogar</button>
-          <button id="btn-instalar" class="btn-secondary" aria-label="Instalar Labirinto Game" style="display:none;">Instalar App</button>
-          <button id="btn-tema" class="btn-secondary" aria-label="Alternar tema claro/escuro">Alternar tema</button>
+  <main id="main-content">
+    <header class="header">
+      <div class="header-controls">
+        <button id="btn-tema" class="btn-icon" aria-label="Alternar tema" title="Tema">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 18C6.48 18 2 13.52 2 8c0-.78.1-1.54.29-2.26a2.5 2.5 0 00-2.3 2.96c.21 1.39.77 2.78 1.69 3.97 1.73 2.19 4.5 3.63 7.61 3.63 2.34 0 4.49-.78 6.21-2.06.26-.21.51-.43.74-.67a2.5 2.5 0 00-1.24-4.57zm9-2c.83 0 1.5-.67 1.5-1.5S21.83 13 21 13s-1.5.67-1.5 1.5.67 1.5 1.5 1.5z"/>
+          </svg>
+        </button>
+        <button id="btn-instalar" class="btn-icon" aria-label="Instalar app" title="Instalar" style="display:none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="container">
+      <section class="game-area" aria-labelledby="maze-title">
+        <h1 id="maze-title" style="display:none;">Maze Daily</h1>
+        
+        <div class="game-info">
+          <div id="maze-id" class="maze-id">Maze #<span>00000</span></div>
+          <div id="tempo-jogo" class="tempo-display" aria-live="polite"></div>
         </div>
-        <div class="info-pwa" aria-live="polite"></div>
-            </div>
-          </section>
-          <section class="jogo" aria-labelledby="labirinto-titulo" style="margin-top:2.5rem;">
-            <h2 id="labirinto-titulo" style="display:none;">Labirinto do Dia</h2>
-            <canvas id="labirinto-canvas" width="320" height="320" aria-label="Labirinto" tabindex="0" role="img"></canvas>
-            <div class="controles" role="group" aria-label="Controles de movimentação">
-              <button id="btn-cima" aria-label="Mover para cima" tabindex="0">▲</button>
-              <button id="btn-baixo" aria-label="Mover para baixo" tabindex="0">▼</button>
-              <button id="btn-esquerda" aria-label="Mover para esquerda" tabindex="0">◀</button>
-              <button id="btn-direita" aria-label="Mover para direita" tabindex="0">▶</button>
-            </div>
-            <div id="tempo-jogo" aria-live="polite"></div>
-            <button id="btn-download" class="btn-secondary" aria-label="Baixar labirinto como imagem" style="margin-top:1rem;">Baixar Labirinto</button>
-          </section>
-      </div>
-    </section>
-    <section class="jogo" aria-labelledby="labirinto-titulo" style="display:none;">
-      <h2 id="labirinto-titulo">Labirinto do Dia</h2>
-      <canvas id="labirinto-canvas" width="320" height="320" aria-label="Labirinto" tabindex="0" role="img"></canvas>
-      <div class="controles">
-        <button id="btn-cima" aria-label="Mover para cima" tabindex="0">▲</button>
-        <button id="btn-baixo" aria-label="Mover para baixo" tabindex="0">▼</button>
-        <button id="btn-esquerda" aria-label="Mover para esquerda" tabindex="0">◀</button>
-        <button id="btn-direita" aria-label="Mover para direita" tabindex="0">▶</button>
-      </div>
-      <div id="tempo-jogo" aria-live="polite"></div>
-      <button id="btn-voltar" class="btn-secondary" aria-label="Voltar para a landing">Voltar</button>
-    </section>
-    <section class="como-funciona" aria-labelledby="como-funciona-titulo">
-      <h2 id="como-funciona-titulo">Como funciona?</h2>
-      <ul>
-        <li>Um novo labirinto por dia (ou aleatórios)</li>
-        <li>Controle por teclado ou toque</li>
-        <li>Pontuação por tempo de resolução</li>
-        <li>Histórico dos melhores tempos</li>
-        <li>Instale como PWA e jogue offline</li>
-        <li>Design responsivo, acessível e otimizado</li>
-      </ul>
-    </section>
-    <section class="acessibilidade" aria-labelledby="acessibilidade-titulo">
-      <h2 id="acessibilidade-titulo">Acessibilidade & SEO</h2>
-      <p>Este projeto segue boas práticas de acessibilidade (WCAG), SEO, meta tags e responsividade. Experimente o tema claro/escuro!</p>
-    </section>
-    <section class="hero" aria-labelledby="titulo-jogo">
-      <div class="card-hero">
-        <div class="icon-labirinto" aria-hidden="true">
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="48" height="48" rx="12" fill="#0078d7"/>
-            <path d="M16 16H40V40H16V16ZM20 20V36H36V20H20Z" fill="#fff"/>
-            <rect x="24" y="24" width="8" height="8" rx="2" fill="#43e97b"/>
+
+        <canvas 
+          id="labirinto-canvas" 
+          width="340" 
+          height="340" 
+          class="canvas-maze"
+          aria-label="Labirinto" 
+          tabindex="0" 
+          role="img">
+        </canvas>
+
+        <div class="game-status" id="game-status"></div>
+      </section>
+    </div>
+
+    <div class="info-pwa" id="info-pwa" aria-live="polite"></div>
+  </main>
           </svg>
         </div>
         <h1 id="titulo-jogo">Labirinto Game</h1>
