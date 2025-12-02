@@ -68,9 +68,12 @@ const PWAManager = {
 		deferredPrompt.prompt();
 		deferredPrompt.userChoice.then(({ outcome }) => {
 			if (outcome === 'accepted') {
-				document.getElementById('info-pwa').textContent = 'App instalado!';
+				const infoPwa = document.getElementById('info-pwa');
+				infoPwa.textContent = 'App instalado!';
+				infoPwa.classList.add('show');
 				setTimeout(() => {
-					document.getElementById('info-pwa').textContent = '';
+					infoPwa.classList.remove('show');
+					infoPwa.textContent = '';
 				}, 3000);
 			}
 			deferredPrompt = null;

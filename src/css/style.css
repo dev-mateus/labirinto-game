@@ -48,7 +48,7 @@ main {
 .header {
   padding: 1rem 1.5rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -147,7 +147,7 @@ html[data-tema='escuro'] .header {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
-  max-width: 340px;
+  max-width: 320px;
   border-radius: 16px;
   background: var(--color-canvas);
   box-shadow: var(--shadow-lg);
@@ -203,6 +203,11 @@ html[data-tema='escuro'] .header {
   max-width: 90vw;
   text-align: center;
   animation: slideUp 0.4s ease;
+  display: none;
+}
+
+.info-pwa.show {
+  display: block;
 }
 
 html[data-tema='escuro'] .info-pwa {
