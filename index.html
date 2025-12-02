@@ -15,7 +15,32 @@
 </head>
 <body>
   <main id="main-content" tabindex="-1">
-    <!-- Conteúdo será adicionado na próxima etapa -->
+    <section class="hero" aria-labelledby="titulo-jogo">
+      <h1 id="titulo-jogo">Labirinto Game</h1>
+      <p class="descricao">Desafie-se diariamente com um novo labirinto! Resolva, acompanhe seu tempo e instale o app para jogar offline.</p>
+      <button id="btn-jogar" class="btn-primary" aria-label="Jogar agora">Jogar</button>
+      <button id="btn-instalar" class="btn-secondary" aria-label="Instalar Labirinto Game" style="display:none;">Instalar App</button>
+      <div class="info-pwa" aria-live="polite"></div>
+    </section>
+    <section class="como-funciona" aria-labelledby="como-funciona-titulo">
+      <h2 id="como-funciona-titulo">Como funciona?</h2>
+      <ul>
+        <li>Um novo labirinto por dia (ou aleatórios)</li>
+        <li>Controle por teclado ou toque</li>
+        <li>Pontuação por tempo de resolução</li>
+        <li>Histórico dos melhores tempos</li>
+        <li>Instale como PWA e jogue offline</li>
+        <li>Design responsivo, acessível e otimizado</li>
+      </ul>
+    </section>
+    <section class="acessibilidade" aria-labelledby="acessibilidade-titulo">
+      <h2 id="acessibilidade-titulo">Acessibilidade & SEO</h2>
+      <p>Este projeto segue boas práticas de acessibilidade (WCAG), SEO, meta tags e responsividade. Experimente o tema claro/escuro!</p>
+    </section>
+    <section class="historico" aria-labelledby="historico-titulo">
+      <h2 id="historico-titulo">Seus melhores tempos</h2>
+      <ol id="lista-historico" aria-live="polite"></ol>
+    </section>
   </main>
   <footer>
     © 2025 LabirintoGame. Licenciado sob MIT License.<br>
