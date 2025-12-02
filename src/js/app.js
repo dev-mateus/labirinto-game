@@ -111,7 +111,7 @@ const LabirintoGame = {
 			embaralhar([[0, -2], [0, 2], [2, 0], [-2, 0]]).forEach(([dx, dy]) => {
 				const nx = x + dx, ny = y + dy;
 				if (dentro(nx, ny) && matriz[ny][nx] === 1) {
-					matriz[y + dy / 2][x + dx / 2] = 0;
+					matriz[y + Math.floor(dy / 2)][x + Math.floor(dx / 2)] = 0;
 					dfs(nx, ny);
 				}
 			});
