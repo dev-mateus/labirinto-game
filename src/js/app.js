@@ -198,10 +198,20 @@ document.addEventListener('keydown', e => {
 });
 
 // Botões mobile
-document.getElementById('btn-cima')?.addEventListener('click', () => mover(0, -1));
-document.getElementById('btn-baixo')?.addEventListener('click', () => mover(0, 1));
-document.getElementById('btn-esquerda')?.addEventListener('click', () => mover(-1, 0));
-document.getElementById('btn-direita')?.addEventListener('click', () => mover(1, 0));
+const btnCima = document.getElementById('btn-cima');
+const btnBaixo = document.getElementById('btn-baixo');
+const btnEsquerda = document.getElementById('btn-esquerda');
+const btnDireita = document.getElementById('btn-direita');
+
+function feedbackBotao(btn) {
+	btn.classList.add('ativo');
+	setTimeout(() => btn.classList.remove('ativo'), 150);
+}
+
+btnCima?.addEventListener('click', () => { mover(0, -1); feedbackBotao(btnCima); });
+btnBaixo?.addEventListener('click', () => { mover(0, 1); feedbackBotao(btnBaixo); });
+btnEsquerda?.addEventListener('click', () => { mover(-1, 0); feedbackBotao(btnEsquerda); });
+btnDireita?.addEventListener('click', () => { mover(1, 0); feedbackBotao(btnDireita); });
 
 function checarVitoria() {
 	if (jogador.x === destino.x && jogador.y === destino.y) {
