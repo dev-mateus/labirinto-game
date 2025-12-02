@@ -161,6 +161,7 @@ const LabirintoGame = {
 		const tamanho = labirinto.length;
 		const celula = canvas.width / tamanho;
 		
+		// Desenhar paredes
 		const style = document.documentElement.getAttribute('data-tema') === 'escuro' ? '#0a0a0a' : '#1a1a1a';
 		ctx.fillStyle = style;
 		labirinto.forEach((linha, y) => {
@@ -169,13 +170,35 @@ const LabirintoGame = {
 			});
 		});
 		
+		// Desenhar marcador de INICIO (canto superior esquerdo)
+		ctx.fillStyle = 'rgba(0, 198, 251, 0.2)';
+		ctx.fillRect(1 * celula, 1 * celula, celula, celula);
+		ctx.strokeStyle = '#00c6fb';
+		ctx.lineWidth = 2;
+		ctx.strokeRect(1 * celula, 1 * celula, celula, celula);
+		ctx.fillStyle = '#00c6fb';
+		ctx.font = 'bold ' + Math.floor(celula * 0.6) + 'px Arial';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillText('S', (1 + 0.5) * celula, (1 + 0.5) * celula);
+		
+		// Desenhar marcador de FIM (canto inferior direito)
+		ctx.fillStyle = 'rgba(67, 233, 123, 0.2)';
+		ctx.fillRect(destino.x * celula, destino.y * celula, celula, celula);
+		ctx.strokeStyle = '#43e97b';
+		ctx.lineWidth = 2;
+		ctx.strokeRect(destino.x * celula, destino.y * celula, celula, celula);
+		ctx.fillStyle = '#43e97b';
+		ctx.fillText('F', (destino.x + 0.5) * celula, (destino.y + 0.5) * celula);
+		
+		// Desenhar jogador (circulo no centro da celula atual)
 		ctx.fillStyle = '#00c6fb';
 		ctx.beginPath();
-		ctx.arc((jogador.x + 0.5) * celula, (jogador.y + 0.5) * celula, celula / 2.5, 0, 2 * Math.PI);
+		ctx.arc((jogador.x + 0.5) * celula, (jogador.y + 0.5) * celula, celula / 2.8, 0, 2 * Math.PI);
 		ctx.fill();
-		
-		ctx.fillStyle = '#43e97b';
-		ctx.fillRect(destino.x * celula + celula * 0.2, destino.y * celula + celula * 0.2, celula * 0.6, celula * 0.6);
+		ctx.strokeStyle = 'rgba(0, 198, 251, 0.5)';
+		ctx.lineWidth = 1;
+		ctx.stroke();
 	},
 	
 	mover(dx, dy) {
