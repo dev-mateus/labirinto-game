@@ -157,11 +157,17 @@ const LabirintoGame = {
 			});
 		});
 		
-		// Desenhar rastro do caminho percorrido (mais claro)
-		ctx.fillStyle = 'rgba(0, 198, 251, 0.25)';
+		// Desenhar rastro do caminho percorrido (esfumaçado e futurista)
 		caminho.forEach((pos, idx) => {
 			if (idx !== caminho.length - 1) {  // Não pintar a posição atual
-				ctx.fillRect(pos.x * celula, pos.y * celula, celula, celula);
+				// Efeito de desvanecimento - mais transparente conforme mais antigo
+				const idade = caminho.length - idx;
+				const opacidade = Math.max(0.05, 0.25 * (1 - idade / caminho.length));
+				ctx.fillStyle = `rgba(0, 198, 251, ${opacidade})`;
+				// Desenhar um círculo fino ao invés de quadrado preenchido
+				ctx.beginPath();
+				ctx.arc((pos.x + 0.5) * celula, (pos.y + 0.5) * celula, celula / 3.5, 0, 2 * Math.PI);
+				ctx.fill();
 			}
 		});
 		
