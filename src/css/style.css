@@ -135,6 +135,7 @@ main {
   height: auto;
   aspect-ratio: 1;
   max-width: 336px;
+  margin: 0 auto;
   border-radius: 16px;
   background: var(--color-canvas);
   box-shadow: var(--shadow-lg);
