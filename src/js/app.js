@@ -1,5 +1,5 @@
 // Alternância de tema claro/escuro manual
-const btnTema = document.getElementById('btn-tema');
+const btnTemaTop = document.getElementById('btn-tema');
 function alternarTema() {
 	const atual = document.documentElement.getAttribute('data-tema');
 	if (atual === 'escuro') {
@@ -10,10 +10,21 @@ function alternarTema() {
 		localStorage.setItem('labirinto-tema', 'escuro');
 	}
 }
-if (btnTema) btnTema.addEventListener('click', alternarTema);
+if (btnTemaTop) btnTemaTop.addEventListener('click', alternarTema);
 // Aplica tema salvo
 const temaSalvo = localStorage.getItem('labirinto-tema');
 if (temaSalvo) document.documentElement.setAttribute('data-tema', temaSalvo);
+
+// Download do labirinto como imagem PNG
+const btnDownload = document.getElementById('btn-download');
+if (btnDownload && canvas) {
+	btnDownload.addEventListener('click', () => {
+		const link = document.createElement('a');
+		link.download = 'labirinto.png';
+		link.href = canvas.toDataURL('image/png');
+		link.click();
+	});
+}
 // PWA: registrar Service Worker
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {

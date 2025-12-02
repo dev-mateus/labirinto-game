@@ -27,6 +27,12 @@
   <main id="main-content" tabindex="-1">
     <section class="hero" aria-labelledby="titulo-jogo">
       <div class="card-hero">
+                        <button id="btn-tema" class="btn-tema-top" aria-label="Alternar tema claro/escuro">
+                          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="9" stroke="#0078d7" stroke-width="2" fill="none"/>
+                            <path d="M11 4a7 7 0 1 0 7 7c0-3.87-3.13-7-7-7z" fill="#0078d7"/>
+                          </svg>
+                        </button>
                 <div class="icon-labirinto" aria-hidden="true">
                   <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="4" y="4" width="48" height="48" rx="12" fill="#0078d7"/>
@@ -42,6 +48,20 @@
           <button id="btn-tema" class="btn-secondary" aria-label="Alternar tema claro/escuro">Alternar tema</button>
         </div>
         <div class="info-pwa" aria-live="polite"></div>
+            </div>
+          </section>
+          <section class="jogo" aria-labelledby="labirinto-titulo" style="margin-top:2.5rem;">
+            <h2 id="labirinto-titulo" style="display:none;">Labirinto do Dia</h2>
+            <canvas id="labirinto-canvas" width="320" height="320" aria-label="Labirinto" tabindex="0" role="img"></canvas>
+            <div class="controles" role="group" aria-label="Controles de movimentação">
+              <button id="btn-cima" aria-label="Mover para cima" tabindex="0">▲</button>
+              <button id="btn-baixo" aria-label="Mover para baixo" tabindex="0">▼</button>
+              <button id="btn-esquerda" aria-label="Mover para esquerda" tabindex="0">◀</button>
+              <button id="btn-direita" aria-label="Mover para direita" tabindex="0">▶</button>
+            </div>
+            <div id="tempo-jogo" aria-live="polite"></div>
+            <button id="btn-download" class="btn-secondary" aria-label="Baixar labirinto como imagem" style="margin-top:1rem;">Baixar Labirinto</button>
+          </section>
       </div>
     </section>
     <section class="jogo" aria-labelledby="labirinto-titulo" style="display:none;">
