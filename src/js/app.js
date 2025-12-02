@@ -1,10 +1,9 @@
-// MAZE GAME - Aplicacao Principal (Minimalista)
+// MAZE GAME - Aplicacao Principal (Minimalista - Tema Escuro)
 
 const canvas = document.getElementById('labirinto-canvas');
 const ctx = canvas?.getContext('2d');
 const tempoJogo = document.getElementById('tempo-jogo');
 const btnInstalar = document.getElementById('btn-instalar');
-const btnTema = document.getElementById('btn-tema');
 const mazeIdSpan = document.querySelector('#maze-id span');
 const gameStatus = document.getElementById('game-status');
 
@@ -16,25 +15,8 @@ let timerInterval = null;
 let deferredPrompt = null;
 let isDrawing = false;
 
-// GERENCIADOR DE TEMA
-const TemaManager = {
-	salvo: localStorage.getItem('labirinto-tema'),
-	
-	init() {
-		if (this.salvo) document.documentElement.setAttribute('data-tema', this.salvo);
-		btnTema?.addEventListener('click', () => this.alternar());
-	},
-	
-	alternar() {
-		const atual = document.documentElement.getAttribute('data-tema');
-		const novo = atual === 'escuro' ? 'claro' : 'escuro';
-		document.documentElement.setAttribute('data-tema', novo);
-		localStorage.setItem('labirinto-tema', novo);
-	}
-};
-
 // ============================================================
-// 3. GERENCIADOR DE PWA
+// 2. GERENCIADOR DE PWA
 // ============================================================
 
 // GERENCIADOR DE PWA
@@ -323,7 +305,6 @@ const HistoricoManager = {
 
 // INICIALIZACAO
 document.addEventListener('DOMContentLoaded', () => {
-	TemaManager.init();
 	PWAManager.init();
 	ControlesManager.init();
 	LabirintoGame.iniciar();
