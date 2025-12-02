@@ -161,6 +161,12 @@ main {
   color: #fff;
   transform: scale(0.95);
 }
+.controles button.ativo {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 0 0 4px #43d17a33;
+  transform: scale(0.95);
+}
 .controles button:focus {
   outline: 2px solid var(--color-primary);
 }
