@@ -14,6 +14,7 @@ let inicioTempo = null;
 let timerInterval = null;
 let deferredPrompt = null;
 let isDrawing = false;
+let caminho = [];  // Rastrear caminho percorrido
 
 // ============================================================
 // 2. GERENCIADOR DE PWA
@@ -119,6 +120,7 @@ const LabirintoGame = {
 		labirinto = this.gerarLabirinto(this.obterSeedDiaria());
 		jogador = { x: 1, y: 1 };
 		destino = { x: 13, y: 13 };
+		caminho = [{ x: 1, y: 1 }];  // Iniciar com posição inicial
 		inicioTempo = Date.now();
 		gameStatus.textContent = '';
 		this.atualizarTempo();
@@ -149,6 +151,14 @@ const LabirintoGame = {
 			linha.forEach((celh, x) => {
 				if (celh === 1) ctx.fillRect(x * celula, y * celula, celula, celula);
 			});
+		});
+		
+		// Desenhar rastro do caminho percorrido
+		ctx.fillStyle = 'rgba(0, 198, 251, 0.15)';
+		caminho.forEach((pos, idx) => {
+			if (idx !== caminho.length - 1) {  // Não pintar a posição atual
+				ctx.fillRect(pos.x * celula, pos.y * celula, celula, celula);
+			}
 		});
 		
 		// Desenhar marcador de INICIO (canto superior esquerdo)
@@ -188,6 +198,7 @@ const LabirintoGame = {
 		if (labirinto[ny] && labirinto[ny][nx] === 0) {
 			jogador.x = nx;
 			jogador.y = ny;
+			caminho.push({ x: nx, y: ny });  // Adicionar ao rastro
 			this.desenhar();
 			this.checarVitoria();
 		}

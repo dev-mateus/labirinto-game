@@ -27,10 +27,14 @@ body {
   color: var(--color-text);
   transition: background-color 0.4s, color 0.4s;
   min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 main {
   min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -94,7 +98,7 @@ main {
 
 .game-area {
   width: 100%;
-  max-width: 336px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,7 +138,7 @@ main {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
-  max-width: 336px;
+  max-width: 400px;
   margin: 0 auto;
   border-radius: 16px;
   background: var(--color-canvas);
