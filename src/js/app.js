@@ -1,3 +1,19 @@
+// Alternância de tema claro/escuro manual
+const btnTema = document.getElementById('btn-tema');
+function alternarTema() {
+	const atual = document.documentElement.getAttribute('data-tema');
+	if (atual === 'escuro') {
+		document.documentElement.setAttribute('data-tema', 'claro');
+		localStorage.setItem('labirinto-tema', 'claro');
+	} else {
+		document.documentElement.setAttribute('data-tema', 'escuro');
+		localStorage.setItem('labirinto-tema', 'escuro');
+	}
+}
+if (btnTema) btnTema.addEventListener('click', alternarTema);
+// Aplica tema salvo
+const temaSalvo = localStorage.getItem('labirinto-tema');
+if (temaSalvo) document.documentElement.setAttribute('data-tema', temaSalvo);
 // PWA: registrar Service Worker
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {

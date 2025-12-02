@@ -6,6 +6,18 @@
   --color-footer: #222;
   --color-footer-bg: #eaeaea;
 }
+html[data-tema='escuro'] {
+  --color-bg: #181818;
+  --color-text: #f5f5f5;
+  --color-footer-bg: #222;
+  --color-footer: #eaeaea;
+}
+html[data-tema='claro'] {
+  --color-bg: #f5f5f5;
+  --color-text: #222;
+  --color-footer-bg: #eaeaea;
+  --color-footer: #222;
+}
 body {
   margin: 0;
   font-family: 'Segoe UI', Arial, sans-serif;
