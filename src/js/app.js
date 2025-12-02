@@ -1,3 +1,36 @@
+// PWA: registrar Service Worker
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register('/service-worker.js')
+			.then(() => console.log('Service Worker registrado'))
+			.catch(err => console.warn('SW erro:', err));
+	});
+}
+
+// Instalação do PWA
+let deferredPrompt;
+const btnInstalar = document.getElementById('btn-instalar');
+window.addEventListener('beforeinstallprompt', (e) => {
+	e.preventDefault();
+	deferredPrompt = e;
+	if (btnInstalar) btnInstalar.style.display = 'inline-block';
+});
+if (btnInstalar) {
+	btnInstalar.addEventListener('click', () => {
+		if (deferredPrompt) {
+			deferredPrompt.prompt();
+			deferredPrompt.userChoice.then(choiceResult => {
+				if (choiceResult.outcome === 'accepted') {
+					document.querySelector('.info-pwa').textContent = 'App instalado!';
+				} else {
+					document.querySelector('.info-pwa').textContent = 'Instalação cancelada.';
+				}
+				deferredPrompt = null;
+				btnInstalar.style.display = 'none';
+			});
+		}
+	});
+}
 // Arquivo principal JS do Labirinto Game
 // Estrutura inicial, lógica será adicionada nas próximas etapas
 
