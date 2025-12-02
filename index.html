@@ -71,16 +71,20 @@
       <h2 id="acessibilidade-titulo">Acessibilidade & SEO</h2>
       <p>Este projeto segue boas práticas de acessibilidade (WCAG), SEO, meta tags e responsividade. Experimente o tema claro/escuro!</p>
     </section>
-    <section class="historico" aria-labelledby="historico-titulo">
-      <h2 id="historico-titulo">Seus melhores tempos</h2>
-      <ol id="lista-historico" aria-live="polite"></ol>
+    <section class="hero" aria-labelledby="titulo-jogo">
+      <div class="card-hero">
+        <div class="icon-labirinto" aria-hidden="true">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="48" height="48" rx="12" fill="#0078d7"/>
+            <path d="M16 16H40V40H16V16ZM20 20V36H36V20H20Z" fill="#fff"/>
+            <rect x="24" y="24" width="8" height="8" rx="2" fill="#43e97b"/>
+          </svg>
+        </div>
+        <h1 id="titulo-jogo">Labirinto Game</h1>
+        <p id="descricao-jogo" class="descricao">Desafie-se diariamente com um novo labirinto! Resolva, acompanhe seu tempo e instale o app para jogar offline.</p>
+        <div class="actions">
+          <button id="btn-instalar" class="btn-secondary" aria-label="Instalar Labirinto Game" style="display:none;">Instalar App</button>
+        </div>
+        <div class="info-pwa" aria-live="polite"></div>
+      </div>
     </section>
-  </main>
-  <footer>
-    © 2025 LabirintoGame. Licenciado sob MIT License.<br>
-    Desenvolvido com ❤️ por <a href="https://github.com/Mateus" target="_blank" rel="noopener" aria-label="Perfil do Mateus no GitHub">Mateus</a>
-    <img src="assets/og-image.png" alt="Labirinto Game" loading="lazy" width="1" height="1" style="opacity:0;position:absolute;" aria-hidden="true">
-  </footer>
-  <script src="src/js/app.js" defer></script>
-</body>
-</html>
