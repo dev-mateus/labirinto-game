@@ -98,7 +98,7 @@ main {
 
 .game-area {
   width: 100%;
-  max-width: 400px;
+  max-width: 416px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -138,10 +138,10 @@ main {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
-  max-width: 400px;
+  max-width: 416px;
   margin: 0 auto;
   border-radius: 16px;
-  background: var(--color-canvas);
+  background: #1a1a1a;
   box-shadow: var(--shadow-lg);
   cursor: crosshair;
   border: none;

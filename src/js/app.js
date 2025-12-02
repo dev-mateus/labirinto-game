@@ -149,16 +149,16 @@ const LabirintoGame = {
 		const tamanho = labirinto.length;
 		const celula = canvas.width / tamanho;
 		
-		// Desenhar paredes com cinza mais claro para melhor contraste
-		ctx.fillStyle = '#2a2a2a';
+		// Desenhar paredes com cinza mais escuro
+		ctx.fillStyle = '#0a0a0a';
 		labirinto.forEach((linha, y) => {
 			linha.forEach((celh, x) => {
 				if (celh === 1) ctx.fillRect(x * celula, y * celula, celula, celula);
 			});
 		});
 		
-		// Desenhar rastro do caminho percorrido
-		ctx.fillStyle = 'rgba(0, 198, 251, 0.15)';
+		// Desenhar rastro do caminho percorrido (mais claro)
+		ctx.fillStyle = 'rgba(0, 198, 251, 0.25)';
 		caminho.forEach((pos, idx) => {
 			if (idx !== caminho.length - 1) {  // Não pintar a posição atual
 				ctx.fillRect(pos.x * celula, pos.y * celula, celula, celula);
