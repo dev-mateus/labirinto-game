@@ -22,6 +22,18 @@
       <button id="btn-instalar" class="btn-secondary" aria-label="Instalar Labirinto Game" style="display:none;">Instalar App</button>
       <div class="info-pwa" aria-live="polite"></div>
     </section>
+    <section class="jogo" aria-labelledby="labirinto-titulo" style="display:none;">
+      <h2 id="labirinto-titulo">Labirinto do Dia</h2>
+      <canvas id="labirinto-canvas" width="320" height="320" aria-label="Labirinto" tabindex="0" role="img"></canvas>
+      <div class="controles">
+        <button id="btn-cima" aria-label="Mover para cima">▲</button>
+        <button id="btn-baixo" aria-label="Mover para baixo">▼</button>
+        <button id="btn-esquerda" aria-label="Mover para esquerda">◀</button>
+        <button id="btn-direita" aria-label="Mover para direita">▶</button>
+      </div>
+      <div id="tempo-jogo" aria-live="polite"></div>
+      <button id="btn-voltar" class="btn-secondary" aria-label="Voltar para a landing">Voltar</button>
+    </section>
     <section class="como-funciona" aria-labelledby="como-funciona-titulo">
       <h2 id="como-funciona-titulo">Como funciona?</h2>
       <ul>
