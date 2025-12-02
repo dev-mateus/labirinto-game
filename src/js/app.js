@@ -144,8 +144,7 @@ const LabirintoGame = {
 		const celula = canvas.width / tamanho;
 		
 		// Desenhar paredes
-		const style = document.documentElement.getAttribute('data-tema') === 'escuro' ? '#0a0a0a' : '#1a1a1a';
-		ctx.fillStyle = style;
+		ctx.fillStyle = '#0a0a0a';
 		labirinto.forEach((linha, y) => {
 			linha.forEach((celh, x) => {
 				if (celh === 1) ctx.fillRect(x * celula, y * celula, celula, celula);
