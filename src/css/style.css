@@ -5,6 +5,12 @@
   --color-primary: #0078d7;
   --color-footer: #222;
   --color-footer-bg: #eaeaea;
+  --color-gradient: linear-gradient(135deg, #0078d7 0%, #43d17a 100%);
+  --color-card-bg: #fff;
+  --color-card-bg-dark: #222;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.08);
+  --font-title: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  --font-body: 'Segoe UI', Arial, sans-serif;
 }
 html[data-tema='escuro'] {
   --color-bg: #181818;
@@ -20,9 +26,11 @@ html[data-tema='claro'] {
 }
 body {
   margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: var(--color-bg);
+  font-family: var(--font-body);
+  background: var(--color-gradient);
   color: var(--color-text);
+  min-height: 100vh;
+  transition: background 0.5s;
 }
 main {
   max-width: 480px;
@@ -30,8 +38,63 @@ main {
   padding: 1.5rem 1rem 2rem 1rem;
 }
 .hero {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
   margin-bottom: 2rem;
+}
+.card-hero {
+  background: var(--color-card-bg);
+  box-shadow: var(--shadow-card);
+  border-radius: 18px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 400px;
+  margin: 2rem auto 0 auto;
+  text-align: center;
+  animation: fadeIn 1s;
+}
+@media (prefers-color-scheme: dark), html[data-tema='escuro'] {
+  .card-hero {
+    background: var(--color-card-bg-dark);
+    color: var(--color-text);
+  }
+}
+.card-hero h1 {
+  font-family: var(--font-title);
+  font-size: 2.5rem;
+  margin-bottom: 0.7rem;
+  letter-spacing: 1px;
+}
+.card-hero .descricao {
+  font-size: 1.15rem;
+  margin-bottom: 1.2rem;
+}
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+.info-pwa {
+  margin-top: 0.7rem;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+}
+.instrucoes-entrada {
+  margin-top: 1.2rem;
+  font-size: 0.98rem;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.instrucoes-entrada span {
+  opacity: 0.85;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
 }
 .hero h1 {
   font-size: 2.2rem;
@@ -77,18 +140,26 @@ main {
 .controles {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1.2rem;
   margin-bottom: 1rem;
+  margin-top: 1.2rem;
 }
 .controles button {
-  font-size: 1.3rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-primary);
+  font-size: 2.2rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
   background: #fff;
   color: var(--color-primary);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+  outline: none;
+}
+.controles button:active {
+  background: var(--color-primary);
+  color: #fff;
+  transform: scale(0.95);
 }
 .controles button:focus {
   outline: 2px solid var(--color-primary);
