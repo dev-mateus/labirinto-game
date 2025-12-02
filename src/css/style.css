@@ -53,6 +53,18 @@ main {
   margin: 0 auto;
   text-align: center;
   animation: fadeIn 0.7s;
+  position: relative;
+}
+.icon-labirinto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.1rem;
+  animation: iconPop 0.8s cubic-bezier(.5,1.8,.5,1) 0.1s both;
+}
+@keyframes iconPop {
+  0% { opacity: 0; transform: scale(0.7) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 @media (prefers-color-scheme: dark), html[data-tema='escuro'] {
   .card-hero {
@@ -116,6 +128,12 @@ main {
   border: none;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s, transform 0.13s;
+}
+.btn-primary:hover, .btn-secondary:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px rgba(0,120,215,0.10);
 }
 .btn-primary {
   background: var(--color-primary);
@@ -237,10 +255,20 @@ h2 {
 }
 footer {
   text-align: center;
-  padding: 1rem;
-  background: var(--color-footer-bg);
-  color: var(--color-footer);
-  font-size: 0.95rem;
+  padding: 0.7rem 0.5rem;
+  background: rgba(255,255,255,0.75);
+  color: #444;
+  font-size: 0.93rem;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 2rem;
+  letter-spacing: 0.01em;
+}
+@media (prefers-color-scheme: dark), html[data-tema='escuro'] {
+  footer {
+    background: rgba(34,34,34,0.85);
+    color: #bbb;
+    border-top: 1px solid #333;
+  }
 }
 @media (prefers-color-scheme: dark) {
   :root {
