@@ -133,6 +133,21 @@ const LabirintoGame = {
 		if (mazeIdSpan) mazeIdSpan.textContent = this.obterIdMaze();
 	},
 	
+	gerarNovo() {
+		const seedAleatoria = Math.floor(Math.random() * 100000);
+		labirinto = this.gerarLabirinto(seedAleatoria);
+		jogador = { x: 1, y: 1 };
+		destino = { x: 13, y: 13 };
+		caminho = [{ x: 1, y: 1 }];
+		inicioTempo = Date.now();
+		gameStatus.textContent = '';
+		this.atualizarTempo();
+		this.desenhar();
+		clearInterval(timerInterval);
+		timerInterval = setInterval(() => this.atualizarTempo(), 100);
+		if (mazeIdSpan) mazeIdSpan.textContent = String(seedAleatoria).padStart(5, '0');
+	},
+	
 	parar() {
 		clearInterval(timerInterval);
 	},
@@ -328,4 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	PWAManager.init();
 	ControlesManager.init();
 	LabirintoGame.iniciar();
+	
+	// Expor função para gerar novo labirinto no console
+	window.novoLabirinto = () => LabirintoGame.gerarNovo();
+	console.log('💡 Digite novoLabirinto() no console para gerar um novo mapa de teste');
 });
