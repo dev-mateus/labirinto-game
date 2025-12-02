@@ -5,10 +5,10 @@
   --color-primary: #0078d7;
   --color-footer: #222;
   --color-footer-bg: #eaeaea;
-  --color-gradient: linear-gradient(135deg, #0078d7 0%, #43d17a 100%);
+  --color-gradient: linear-gradient(120deg, #00c6fb 0%, #43e97b 100%);
   --color-card-bg: #fff;
-  --color-card-bg-dark: #222;
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.08);
+  --color-card-bg-dark: #23272f;
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.07);
   --font-title: 'Montserrat', 'Segoe UI', Arial, sans-serif;
   --font-body: 'Segoe UI', Arial, sans-serif;
 }
@@ -40,19 +40,19 @@ main {
 .hero {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: 60vh;
-  margin-bottom: 2rem;
+  align-items: center;
+  min-height: 70vh;
+  margin-bottom: 1.5rem;
 }
 .card-hero {
   background: var(--color-card-bg);
   box-shadow: var(--shadow-card);
-  border-radius: 18px;
-  padding: 2.5rem 2rem 2rem 2rem;
-  max-width: 400px;
-  margin: 2rem auto 0 auto;
+  border-radius: 12px;
+  padding: 2.2rem 1.5rem 1.7rem 1.5rem;
+  max-width: 370px;
+  margin: 0 auto;
   text-align: center;
-  animation: fadeIn 1s;
+  animation: fadeIn 0.7s;
 }
 @media (prefers-color-scheme: dark), html[data-tema='escuro'] {
   .card-hero {
